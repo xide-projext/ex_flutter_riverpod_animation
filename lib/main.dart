@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:flutter/scheduler.dart' show TickerProvider;
 
 part 'main.g.dart';
 
@@ -78,7 +79,8 @@ class SubPage extends ConsumerWidget {
 }
 
 
-class AnimationExample extends StatefulWidget {
+
+class AnimationExample extends ConsumerStatefulWidget {
   final Color color;
 
   const AnimationExample({Key? key, this.color = Colors.grey}) : super(key: key);
@@ -87,8 +89,8 @@ class AnimationExample extends StatefulWidget {
   _AnimationExampleState createState() => _AnimationExampleState();
 }
 
-class _AnimationExampleState extends State<AnimationExample>
-    with SingleTickerProviderStateMixin {
+  class _AnimationExampleState extends ConsumerState<AnimationExample>
+      with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _animation;
 
@@ -156,7 +158,7 @@ class _AnimationExampleState extends State<AnimationExample>
                   height: _animation.value,
                   color: widget.color,
                   alignment: Alignment.center,
-                  child: Text('Animating... ${widget.color.value}'),
+                  child: Text('Animating... ${ref.read(counterProvider)} ${widget.color.value}'),
                 ),
               ),
             ],
