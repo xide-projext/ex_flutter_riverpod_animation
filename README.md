@@ -14,4 +14,9 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+
 # ex_flutter_riverpod_animation
+
+## Todo
+- [ ] Animation효과를 상태관리의 값을 참조하기

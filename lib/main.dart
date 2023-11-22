@@ -69,7 +69,100 @@ class SubPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(title:  Text('Counter x Animation ${ref.watch(counterProvider)}')),
-      body: Text('Sub page')
+      body: SizedBox(
+                height: 300.0,
+                child: AnimationExample(color: Colors.blue),
+              ),
     ); 
+  }
+}
+
+
+class AnimationExample extends StatefulWidget {
+  final Color color;
+
+  const AnimationExample({Key? key, this.color = Colors.grey}) : super(key: key);
+
+  @override
+  _AnimationExampleState createState() => _AnimationExampleState();
+}
+
+class _AnimationExampleState extends State<AnimationExample>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    );
+
+    // Tween을 사용하여 시작과 끝 크기를 정의합니다. 여기서는 100에서 200으로 변합니다.
+    final sizeTween = Tween<double>(begin: 100.0, end: 200.0);
+
+    // CurvedAnimation을 사용하여 속도 곡선을 정의합니다.
+    final curve = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInCubic,
+    );
+
+    // Tween과 CurvedAnimation을 결합합니다.
+    _animation = sizeTween.animate(curve);
+
+    // 리니어한 애니메이션을 위해 Tween만 사용합니다.
+    // _animation = sizeTween.animate(_controller);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: AnimatedBuilder(
+        animation: _animation,
+        builder: (context, child) {
+          // _animation.value는 sizeTween에서 정의한 범위 내에서 변합니다.
+          return Column(
+            children: [
+              TextButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                        Colors.blue), // Set the background color to blue
+                    foregroundColor: MaterialStateProperty.all<Color>(
+                        Colors.white), // Set the text color to white
+                    padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                        EdgeInsets.all(
+                            16.0)), // Increase padding for larger touch area
+                  ),
+                  onPressed: () {
+                    if (_controller.status == AnimationStatus.completed) {
+                      _controller.reverse();
+                    } else {
+                      _controller.forward();
+                    }
+                  },
+                  child: Text('Animate')),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+                child: Container(
+                  width: _animation.value,
+                  height: _animation.value,
+                  color: widget.color,
+                  alignment: Alignment.center,
+                  child: Text('Animating... ${widget.color.value}'),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
   }
 }
